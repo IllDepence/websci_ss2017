@@ -4,7 +4,7 @@
 * token unigrams/bigrams (= [n-grams](https://en.wikipedia.org/wiki/N-gram)?)
 * CQA analysis ([reference](https://research.google.com/pubs/pub37119.html) does not contain string "CQA")
 * hierarchical softmax ([quora](https://www.quora.com/What-is-hierarchical-softmax))
-* skip bigram model ([bigram (wiki](https://en.wikipedia.org/wiki/Bigram) "Gappy bigrams or skipping bigrams are word pairs which allow gaps (perhaps avoiding connecting words, or allowing some simulation of dependencies, as in a dependency grammar)."?)
+* skip bigram model ([bigram (wiki)](https://en.wikipedia.org/wiki/Bigram) "Gappy bigrams or skipping bigrams are word pairs which allow gaps (perhaps avoiding connecting words, or allowing some simulation of dependencies, as in a dependency grammar)."?)
 * distributed representation ([quora](https://www.quora.com/Deep-Learning-What-is-meant-by-a-distributed-representation))
 * AUR[OC]
     * [stats.stackexchange.com](https://stats.stackexchange.com/questions/132777/what-does-auc-stand-for-and-what-is-it)
