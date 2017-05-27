@@ -50,11 +50,16 @@ While the seriousness of the effects such behaviour can have on victims may have
 This report will give an introduction into the topic of \emph{Abusive behavior in social media} --- or more precise: the decection of such behavior --- and is structured as follows. Section 2 will give a wider view on the topic, provide necessary background information and shortly describe approaches for trackling the problem at hand. In section 3 the focus will be put on machine learning as one possible approach. While giving a short overview of the steps of a machine learning procedure in general, noteworthy particularities with regards to abusive behavior in social media will be explained. Section 4 will introduce two concrete approaches --- efforts for detecting abusive comments on Yahoo! on the one hand and agressive Twitter accounts on the other. This will be followed by a comparison of the two. Lastly, section 5 will conclude the report.
 
 \section{Background}
-In the physical world, abusive behavior can take many forms. Acts of bullying, for example, can be categorized into four types: physical, verbal, relational and damage to property\cite{bullying:2014}. In social media, physical abuse is not possible and damage to property at least rather unlikely and certainly not commonplace. While relational bullying is a possiblity, this report will focus on verbal types of abusive behaviour (that is, not only bullying but in general) from hereon.
+In the physical world, abusive behavior can take many forms. Acts of bullying, for example, can be categorized into four types: physical, verbal, relational and damage to property\cite{bullying:2014}. In social media, physical abuse is not possible and damage to property at least rather unlikely and certainly not commonplace. While relational bullying is a possiblity, this report will focus on verbal types of abusive behaviour in social media from hereon. Put simply, the remainder of this report is concerned with detecting absusive or malicious intent in text based communication.
 
 \subsection{Problem formulation}
-- What's the general problem\\
-- What are the challenges (language changing, sarcasm, etc.)
+On a high level of abstraction, the task at hand is detecting and stopping abusive behaviour in a social media setting. Within the scope of this report \emph{''behavior''} boils down to communication in text form. This communication may be associated with user accounts. User accounts in turn also may have different qualities of interest.
+
+Looking at it from the perspective of an entity operating a social platform, the problem can be formulated as: given all the information about the actors on our platform and the communication they engage in, how can abusive communication be detected? Depending on what constitues an actor on a platform, different possibilities for approaching that goal exist. For example, in the case of platform that wants its user accounts to be as representative of the real person controlling the account as possible (e.g. Facebook), it might be viable to detect abusive \emph{accounts} in order to stop abusive communication. On the other hand, for a platform where the notion of an account does not hold much informational value, it might be more feasable to try and detect abusive communication from its contents only. Examples for the latter setting might be online comment sections that allow anonymous posting, or platforms like 2channel\footnote{http://2ch.net/} or 4chan\footnote{https://www.4chan.org/} that just give each participant an ID, so messages of the same origin can be identified as such, while connecting from a different IP address results in a different ID and the traceability of a common origin of messages is lost.
+
+\subsection{Challenges}
+Since a mayor, the natural language 
+
 \subsection{Approaches for solving the problem}
 - Most basic: blacklisting of words\\
 - More sophisticated: machine learning, deep learning, etc.
