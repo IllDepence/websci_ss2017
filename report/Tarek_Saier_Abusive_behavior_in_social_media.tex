@@ -70,20 +70,39 @@ Another set of challanges is given by the fact that the communication to be exam
 \item Language changing over time might require detection methods to be adapted over and over again.
 \end{itemize}
 
+Lastly, advancing the field of abusive behavior detection can be challenging because a lot of work may target different types of abusive behavior (e.g. bullying, aggression, hate speech, derogatory language, profanity) and therefore be incompatible.
+
+
 \subsection{Approaches for solving the problem}
-- Most basic: blacklisting of words\\
-- More sophisticated: machine learning, deep learning, etc.
+The following will give a very brief overview of some approaches to detect abusive language, while the remainder of the report will focus on machine learning as one such approach.
+
+\subsubsection{Most basic} An overly simplistic approach --- nevertheless often seen applied in online forums --- is to maintain a list of words that are deemed offensive, and filtering out those words or messages containing at least one blacklisted word. As described before this is easily circumvented by users that intentionally misspell or obfuscate offensive terms. Another problem with this approach is that a lot of harmless words containing offensive terms (e.g. to snigger) might falsely be flagged.
+
+\subsubsection{More sophisticated} More sophisticated approaches don't just take into account the words \emph{as is}, but bring them into context. This can, for example, be done by considering the TFIDF scores of selected words. Furthermore, to allow for variations and obfuscated versions of words, not the words themselves but n-grams are used\cite{Yin:2009}. Recent techniques most often are machine learning\cite{Yahoo:2016}\cite{Twitter:2017} or deep learning\cite{DeepLearning:2017} approaches that take into account many different language-based, network-based and, if appilcable, user-based features.
 
 \section{Machine learning}
-- \emph{short} description/recap of ML approach / noteworthy particularities with regards to topic at hand
+To develop a supervised machine learning approach for the task of abusive behavior detection one needs to:
+\begin{itemize}
+\item have or produce a data set with labels (e.g. \emph{abusive} and \emph{not abusive} --- or more fine-grained)
+\item decide on which features to extract from the data
+\item decide on a learning algorithm
+\item evaluate the system
+\end{itemize}
+The following sections will briefly describe each step and, if appilcable, highlight noteworthy particularities with regards to abusive behavior in social media.
+
 \subsection{Data collection}
-- No de facto testing set for abusive language\cite{Yahoo:2016}
+For the algorithm to work on, labeled data is necessary. This can be freely available and established testing sets (like the MovieLens data set\footnote{\url{https://grouplens.org/datasets/movielens/}} for the movie domain) or newly obtained data labeled via crowdsourcing or trained personnel.
+
+In the case of abusive behavior in social media, data collection is still problematic to a certain extend, since there is no de facto testing set for abusive language\cite{Yahoo:2016}.
+
 \subsection{Feature extraction}
--
+The extraction of features from the data is essential in that it dictates what the learning algorithm gets as its input. This step might include \emph{feature processing} --- for example the generation of n-grams from whole words.
+
 \subsection{Learning}
--
+Training
+
 \subsection{Evaluation}
--
+Prediction
 
 \section{Two concrete approaches}
 -
@@ -91,7 +110,7 @@ Another set of challanges is given by the fact that the communication to be exam
 - Description and discussion of \cite{Yahoo:2016}\\
 \hphantom{- }- NLP features (e.g. \cite{Distributed:2014})\\
 \hphantom{- }- ''Vowpal Wabbit's regression model''\\
-\hphantom{- }-
+\hphantom{- }- Mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one
 \subsection{Aggressive Twitter accounts}
 - Description and discussion of \cite{Twitter:2017}\\
 \hphantom{- }- WEKA, Random Forest\\
