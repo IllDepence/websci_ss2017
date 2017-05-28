@@ -28,6 +28,7 @@
 
 \documentclass{proseminar}
 \usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -78,12 +79,12 @@ The following will give a very brief overview of some approaches to detect abusi
 
 \subsubsection{Most basic} An overly simplistic approach --- nevertheless often seen applied in online forums --- is to maintain a list of words that are deemed offensive, and filtering out those words or messages containing at least one blacklisted word. As described before this is easily circumvented by users that intentionally misspell or obfuscate offensive terms. Another problem with this approach is that a lot of harmless words containing offensive terms (e.g. to snigger) might falsely be flagged.
 
-\subsubsection{More sophisticated} More sophisticated approaches don't just take into account the words \emph{as is}, but bring them into context. This can, for example, be done by considering the TFIDF scores of selected words. Furthermore, to allow for variations and obfuscated versions of words, not the words themselves but n-grams are used\cite{Yin:2009}. Recent techniques most often are machine learning\cite{Yahoo:2016}\cite{Twitter:2017} or deep learning\cite{DeepLearning:2017} approaches that take into account many different language-based, network-based and, if appilcable, user-based features.
+\subsubsection{More sophisticated} More sophisticated approaches don't just take into account the words as isolated merely syntactical bits of information. They rather bring them into context and try to evaluate them semantically. A first step in this direction is, for example, considering the TFIDF scores of words. Furthermore, to allow for variations and obfuscated versions of words, not the words themselves but n-grams can be used\cite{Yin:2009}. Recent techniques most often are machine learning\cite{Yahoo:2016}\cite{Twitter:2017} or deep learning\cite{DeepLearning:2017} approaches that take into account many different language-based, network-based and, if appilcable, user-based features.
 
 \section{Machine learning}
 To develop a supervised machine learning approach for the task of abusive behavior detection one needs to:
 \begin{itemize}
-\item have or produce a data set with labels (e.g. \emph{abusive} and \emph{not abusive} --- or more fine-grained)
+\item have or produce a data set with labels (e.g. a large set of messages labeled \emph{abusive} or \emph{not abusive})
 \item decide on which features to extract from the data
 \item decide on a learning algorithm
 \item evaluate the system
@@ -91,30 +92,54 @@ To develop a supervised machine learning approach for the task of abusive behavi
 The following sections will briefly describe each step and, if appilcable, highlight noteworthy particularities with regards to abusive behavior in social media.
 
 \subsection{Data collection}
-For the algorithm to work on, labeled data is necessary. This can be freely available and established testing sets (like the MovieLens data set\footnote{\url{https://grouplens.org/datasets/movielens/}} for the movie domain) or newly obtained data labeled via crowdsourcing or trained personnel.
+For the algorithm to work on, a large set of labeled data is necessary. This can be freely available and established testing sets (like the MovieLens data set\footnote{\url{https://grouplens.org/datasets/movielens/}} for the movie domain) or newly obtained data labeled via crowdsourcing or trained personnel. The data will be used to train and also evaluate the system.
 
-In the case of abusive behavior in social media, data collection is still problematic to a certain extend, since there is no de facto testing set for abusive language\cite{Yahoo:2016}.
+In the case of abusive behavior detection in social media, data is still problematic to a certain extend, since there is no de facto standard testing set for abusive language\cite{Yahoo:2016}.
 
 \subsection{Feature extraction}
-The extraction of features from the data is essential in that it dictates what the learning algorithm gets as its input. This step might include \emph{feature processing} --- for example the generation of n-grams from whole words.
+The extraction of features from the data is essential in that it dictates what the learning algorithm gets as its input. This step might include \emph{feature processing} steps --- for example the generation of n-grams from whole words.
+
+Common features in the case of abusive behavior detection in social media are text- or language-based (e.g. n-grams, results of seniment analysis and word embeddings), network-based (e.g. cliques and centrality scores) and user-based (e.g. account creation and activity times).
 
 \subsection{Learning}
-Training
+Once a labeled data set and its features are available, a learning algorithm can be trained with it to afterwards itself attempt to put correct labels on data.
 
 \subsection{Evaluation}
-Prediction
+The last step is to use the trained model for predicting labels and checking these predictions against the true labels. This ties in with the data collection step, which means for abusive behavior detection in social media the \emph{creation} of a set with ''true'' labels from scratch is most propably necessary which makes the comparison of evaluation results of different approaches difficult.
 
 \section{Two concrete approaches}
--
+The basis of this report are two papers, \emph{Abusive language detection in online user content} by Nobata et al.\cite{Yahoo:2016} and \emph{Mean birds: Detecting aggression and bullying on twitter} by Chatzakou et al.\cite{Twitter:2017}. Sections 4.1 and 4.2 will describe and discuss them respectively and section 4.3 will compare the two.
+
 \subsection{Abusive Yahoo! comments}
-- Description and discussion of \cite{Yahoo:2016}\\
-\hphantom{- }- NLP features (e.g. \cite{Distributed:2014})\\
-\hphantom{- }- ''Vowpal Wabbit's regression model''\\
-\hphantom{- }- Mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one
+\subsubsection{Task}
+In \cite{Yahoo:2016} Nobata et al. set out to detect comments on Yahoo! News\footnote{\url{https://www.yahoo.com/news/}} and Yahoo! Finance\footnote{\url{https://finance.yahoo.com/}} that contain hate speech, derogatory language or profanity. For their definitions and examples of the three categories see figure \ref{fig:yahoo_hate_speech}.
+
+\begin{figure*}
+\centering
+\includegraphics[width=\textwidth]{img/yahoo_hate_speech}
+\caption{Annotation instructions given to Yahoo! employees for labeling comments in \cite{Yahoo:2016}.}
+\label{fig:yahoo_hate_speech}
+\end{figure*}
+
+\subsubsection{Method}
+\paragraph{Data} The data sets are based on comments from Yahoo! News and Yahoo! Finance. In total 4 different sets are used. The first of these, the \emph{primary data set} is comprised of a random 10\% of the comments from the time between October 2012 and January 2014, plus all comments that have been reported as abusive by users during that time. In total there are a little over 2.1 million comments of which about 13\% are labeled as abusive. For training and testing the data is split into parts of 80\% and 20\% respectively. Second, the \emph{temporal data set} is sampled between April 2014 and April 2015. It consists of about 1.2 million comments of which a little over 7\%\footnote{According to the authors the significantly lower number compared to the \emph{primary data set} is explained by the fact that their models were already in use on the platforms during that time.} are labeled abusive. The \emph{WWW2015 data set} is taken from a prior work were the comments are only taken from Yahoo! Finance during an unspecified 6 month period. There are almost 1 million comments, about 6\% of which are labeled abusive. Lastly, the \emph{evaluation data set}, a data set where extra effort was put into a valid labeling, is sampled and selected between March and April of 2015 and consists of 1000 clean and 1000 abusive comments.
+
+\paragraph{Labelling}
+Trained employes and crowd sourcing experiments and eval data set extra effort.
+
+- NLP features (e.g. \cite{Distributed:2014})\\
+- ''Vowpal Wabbit's regression model''
+
+\subsubsection{Results}
+\subsubsection{Discussion}
+- Mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one
 \subsection{Aggressive Twitter accounts}
-- Description and discussion of \cite{Twitter:2017}\\
-\hphantom{- }- WEKA, Random Forest\\
-\hphantom{- }-
+In \cite{Twitter:2017}
+\subsubsection{Task}
+\subsubsection{Method}
+- WEKA, Random Forest\\
+\subsubsection{Results}
+\subsubsection{Discussion}
 
 \subsection{Comparison}
 - How do \cite{Yahoo:2016} and \cite{Twitter:2017} compare\\
