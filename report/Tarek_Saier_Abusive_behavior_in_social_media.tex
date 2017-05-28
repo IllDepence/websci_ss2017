@@ -112,12 +112,12 @@ The basis of this report are two papers, \emph{Abusive language detection in onl
 
 \subsection{Abusive Yahoo! comments}
 \subsubsection{Task}
-In \cite{Yahoo:2016} Nobata et al. set out to detect comments on Yahoo! News\footnote{\url{https://www.yahoo.com/news/}} and Yahoo! Finance\footnote{\url{https://finance.yahoo.com/}} that contain hate speech, derogatory language or profanity. For their definitions and examples of the three categories see figure \ref{fig:yahoo_hate_speech}.
+In \cite{Yahoo:2016} Nobata et al. set out to detect comments on Yahoo! News\footnote{\url{https://www.yahoo.com/news/}} and Yahoo! Finance\footnote{\url{https://finance.yahoo.com/}} that contain hate speech, derogatory language or profanity. For their definitions and examples of the three categories see Figure \ref{fig:yahoo_hate_speech}.
 
 \begin{figure*}
 \centering
 \includegraphics[width=\textwidth]{img/yahoo_hate_speech}
-\caption{Annotation instructions given to Yahoo! employees for labeling comments in \cite{Yahoo:2016}.}
+\caption{Outline of annotation instructions given to Yahoo! employees for labeling comments in \cite{Yahoo:2016}.}
 \label{fig:yahoo_hate_speech}
 \end{figure*}
 
@@ -125,12 +125,39 @@ In \cite{Yahoo:2016} Nobata et al. set out to detect comments on Yahoo! News\foo
 \paragraph{Data} The data sets are based on comments from Yahoo! News and Yahoo! Finance. In total 4 different sets are used. The first of these, the \emph{primary data set} is comprised of a random 10\% of the comments from the time between October 2012 and January 2014, plus all comments that have been reported as abusive by users during that time. In total there are a little over 2.1 million comments of which about 13\% are labeled as abusive. For training and testing the data is split into parts of 80\% and 20\% respectively. Second, the \emph{temporal data set} is sampled between April 2014 and April 2015. It consists of about 1.2 million comments of which a little over 7\%\footnote{According to the authors the significantly lower number compared to the \emph{primary data set} is explained by the fact that their models were already in use on the platforms during that time.} are labeled abusive. The \emph{WWW2015 data set} is taken from a prior work were the comments are only taken from Yahoo! Finance during an unspecified 6 month period. There are almost 1 million comments, about 6\% of which are labeled abusive. Lastly, the \emph{evaluation data set}, a data set where extra effort was put into a valid labeling, is sampled and selected between March and April of 2015 and consists of 1000 clean and 1000 abusive comments.
 
 \paragraph{Labelling}
-Trained employes and crowd sourcing experiments and eval data set extra effort.
+For labelling the comments Nobata et al. rely on Yahoo! employees which already were used to text annotation tasks and also received training specifically for the judgment guidelines outlined in Figure \ref{fig:yahoo_hate_speech}. When multiple employees were given the same comments to label (which was done for abovementioned \emph{evaluation data set} where each comment was labelled by 3 people) their agreement rate was 0.922 and the Fleiss's kappa 0.843 concerning the clean or abusive dichotomy. When looking at the more fine grained distiction between hate speech, derogatory language and profanity the agreement rate is 0.603 and Fleiss's kappa 0.456.
 
-- NLP features (e.g. \cite{Distributed:2014})\\
-- ''Vowpal Wabbit's regression model''
+For comparison Nobota et al. also looked at the results of untrained raters via Amazon's Mechanical Turk\footnote{\url{https://www.mturk.com/}}. Workers were allowed to label at most 50 comments and were provided with the guidelines shown in Figure \ref{fig:yahoo_hate_speech}. Labels gathered in this manner resulted in an agreement rate of 0.867 and a Fleiss's kappa of 0.401. For the fine-grained distiction the values drop to 0.405 and 0.213 respectively.
+
+\paragraph{Feature extraction} The features used in \cite{Yahoo:2016} are grouped into 4 classes: n-grams, syntatic, linguistic and distributional semantics. The \emph{n-grams} used are generated from not normalized text and from 3 to 5 characters long. By not normalizing the text from which the n-grams are generated the authors hope to model spelling variations of offensive words. To capture dependencies between words that n-grams can't, \emph{syntactic} features derived from ClearNLP\footnote{\url{http://clearnlp.wikispaces.com/}, since February 2016 succeeded by the NLP4J project: \url{https://emorynlp.github.io/nlp4j/}} are used. These encompass Part-of-speech tags (e.g. if a word is a pronoun or interjection, etc.) and dependency relations between words. \emph{Linguistic} features include many basic things like the average length of words or the number of URLs, but also more abstract notions like the number of words associated with hate speech (based on Hatebase\footnote{\url{https://www.hatebase.org/}}) and the number of discourse connectives (based on \cite{Pitler:2009}). Lastly, \emph{distributional semantics} features are divided into two sets of features based on word embeddings and one set of features based on comment embeddings. These features model the context of words or whole comments respectively. Put simply, in the case of a word, its embedding may be used to detect words with similar meaning, since words with similar meaning are used in similar contexts.
+
+% \cite{Distributed:2014}
+
+\paragraph{Machine learning} In their experiments Nobata et al. ''use Vowpal Wabbit's\footnote{\url{http://hunch.net/~vw/}} regression model in its standard setting with a bit rate of 28''\cite{Yahoo:2016} for learning and prediction. Experiments are performed for each of the data sets described in the beginnig of this seciton. Their results are described in the follwing section.
 
 \subsubsection{Results}
+For the \emph{primary data set} the usage of all features yields the best results (an F-score of 0.795 for Yahoo! Finance and 0.817 for Yahoo! News). Using just token n-grams\footnote{In natural language processing a token is a meaningful element (e.g. a word or phrase).} or character n-grams, however, leads to results that are almost as good (Finance=0.772, News=0.740 and Finance=0.726, News=0.769 respectively).
+
+Predictions for the \emph{WWW2015 data set} (as mentioned before this data set only contains comments from Yahoo! Finance) also are best if all features are used (F-score 0.783) and outperform the research the data was initially used in\cite{Yahoo:2015} (AUC 0.9055 and 0.8007 respectively). In fact, token n-grams, character n-grams and two of the distributional semantics feature classes each taken separately also outperform the approach from 2015.
+
+The \emph{evaluation data set} is used to see how different ways of processing the 3 given labels effect the prediction results. The predictions perform best with respect to comments where all labelers agreed (F-score 0.839) followed by measuring predictions against the majority of labels given (F-score 0.826). Comparatively low performance results when using those labels where exactly 2 out of 3 raters agreed (F-score 0.431).
+
+For experiments with the \emph{temporal data set} it is split into slices of 20k comments each. Then the following experiments are run:
+\begin{itemize}
+\item \lbrack Original\rbrack\\train on the \emph{primary data set} predict for slice \texttt{t}
+\item \lbrack Each Slice\rbrack\\train on slice \texttt{t}, predict for slice \texttt{t+1}
+\item \lbrack Accumulated\rbrack\\train on slices \texttt{(0..t)} predict for slice \texttt{t+1}
+\end{itemize}
+
+The results are shown in Figure \ref{fig:yahoo_temporal}. The fact that the results for Accumulated are better than those for Original indicates that it is more important to have a recent training set than to have a large one. In other words, the proposed model is likely sensitive to language changing over time. Furthermore, the fact that the results for Accumulated only show a remarkable upwards trend for the first few slices, shows that a reasonably good effort for detecting abusive content can be realized with comparatively small training data.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{img/yahoo_temporal}
+\caption{Temporal evaluations in \cite{Yahoo:2016}.}
+\label{fig:yahoo_temporal}
+\end{figure}
+
 \subsubsection{Discussion}
 - Mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one
 \subsection{Aggressive Twitter accounts}
