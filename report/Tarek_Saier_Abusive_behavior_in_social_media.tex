@@ -144,9 +144,9 @@ The \emph{evaluation data set} is used to see how different ways of processing t
 
 For experiments with the \emph{temporal data set} it is split into slices of 20k comments each. Then the following experiments are run:
 \begin{itemize}
-\item \lbrack Original\rbrack\\train on the \emph{primary data set} predict for slice \texttt{t}
+\item \lbrack Original\rbrack\\train on the \emph{primary data set}, predict for slice \texttt{t}
 \item \lbrack Each Slice\rbrack\\train on slice \texttt{t}, predict for slice \texttt{t+1}
-\item \lbrack Accumulated\rbrack\\train on slices \texttt{(0..t)} predict for slice \texttt{t+1}
+\item \lbrack Accumulated\rbrack\\train on slices \texttt{(0..t)}, predict for slice \texttt{t+1}
 \end{itemize}
 
 The results are shown in Figure \ref{fig:yahoo_temporal}. The fact that the results for Accumulated are better than those for Original indicates that it is more important to have a recent training set than to have a large one. In other words, the proposed model is likely sensitive to language changing over time. Furthermore, the fact that the results for Accumulated only show a remarkable upwards trend for the first few slices, shows that a reasonably good effort for detecting abusive content can be realized with comparatively small training data.
@@ -159,14 +159,25 @@ The results are shown in Figure \ref{fig:yahoo_temporal}. The fact that the resu
 \end{figure}
 
 \subsubsection{Discussion}
-- Mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one
+- very thorough examination\\
+- amazon mechanical turk interesting (''side''/''meta'') experiment\\
+- evaluation data set experiment: no mention of what the training set was\\
+- evaluation data set: nice that it's made public but comparison to other papers with same training set not possible\\
+- mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one (?)\\
+- as mentioned in conclusion: other languages (esp. ones that don't use latin script) would be interesting\\
+- as mentioned in conclusion: usage of context (surrounding comments, user profiles, etc.) might be useful
+
 \subsection{Aggressive Twitter accounts}
-In \cite{Twitter:2017}
 \subsubsection{Task}
+In \cite{Twitter:2017} Chatzakou et al. make an approach to detect Twitter accounts that conduct bullying or aggressive behaviour. They define bullying as ''the repeated and hostile behavior by a group or an individual'' and aggression as ''intentional harm delivered [...] to a person or a group of people who perceive such acts as offensive, derogatory, harmful or unwanted''.
+
 \subsubsection{Method}
-- WEKA, Random Forest\\
-\subsubsection{Results}
-\subsubsection{Discussion}
+\paragraph{Data} 10\% Twitter API, GamerGate
+\paragraph{Labelling} CrowdFlower, each batch by 5 workers, labels: normal, aggressive, bullying, spammer
+\paragraph{Feature extraction} Spam removal, sessions. User based, text based, network based.
+\paragraph{Machine learning} Various tree based classifiers. best: WEKA, Random Forest.
+\subsubsection{Results} test all and subsets of labels.
+\subsubsection{Discussion} twitter acc removals, user acc deletions. no mention of language (only english, approach language independent?).
 
 \subsection{Comparison}
 - How do \cite{Yahoo:2016} and \cite{Twitter:2017} compare\\
