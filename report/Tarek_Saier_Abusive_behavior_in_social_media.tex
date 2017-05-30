@@ -108,7 +108,7 @@ Once a labeled data set and its features are available, a learning algorithm can
 The last step is to use the trained model for predicting labels and checking these predictions against the true labels. This ties in with the data collection step, which means for abusive behavior detection in social media the \emph{creation} of a set with ''true'' labels from scratch is most propably necessary which makes the comparison of evaluation results of different approaches difficult.
 
 \section{Two concrete approaches}
-The basis of this report are two papers, \emph{Abusive language detection in online user content} by Nobata et al.\cite{Yahoo:2016} and \emph{Mean birds: Detecting aggression and bullying on twitter} by Chatzakou et al.\cite{Twitter:2017}. Sections 4.1 and 4.2 will describe and discuss them respectively and section 4.3 will compare the two.
+The basis of this report are two papers, \emph{Abusive Language Detection in Online User Content} by Nobata et al.\cite{Yahoo:2016} and \emph{Mean birds: Detecting Aggression and Bullying on Twitter} by Chatzakou et al.\cite{Twitter:2017}. Sections 4.1 and 4.2 will describe and discuss them respectively and section 4.3 will compare the two.
 
 \subsection{Abusive Yahoo! comments}
 \subsubsection{Task}
@@ -163,7 +163,7 @@ The results are shown in Figure \ref{fig:yahoo_temporal}. The fact that the resu
 - amazon mechanical turk interesting (''side''/''meta'') experiment\\
 - evaluation data set experiment: no mention of what the training set was\\
 - evaluation data set: nice that it's made public but comparison to other papers with same training set not possible\\
-- mentions outperforming ''state of the art deep learning approach'' but never makes any referecnce to one (?)\\
+- mentions outperforming ''state of the art deep learning approach'': outperforms approach based (soley?) on word2vec (which is deep learning), also uses word2vec\\
 - as mentioned in conclusion: other languages (esp. ones that don't use latin script) would be interesting\\
 - as mentioned in conclusion: usage of context (surrounding comments, user profiles, etc.) might be useful
 
@@ -183,13 +183,41 @@ In \cite{Twitter:2017} Chatzakou et al. make an approach to detect Twitter accou
 
 The raw sets of tweets are furthermore processed in 3 steps. In a first step, the tweets are cleaned of noise by removing stop words, punctuation, numbers, URLs and emoticons. Also all characters are converted to lower case. Second, in order to remove spam, tweets from accounts with more than 5 hashtags per tweet on average as well as with an intra-tweet similarity above 0.8 are removed. Lastly tweets are grouped by user and into sessions\footnote{Where a session in defined as a consecutive set of tweets where no 2 tweets are seperated by 8 hours or more.} and those sessions furthermore split into batches of digestible size for labelling\footnote{The authors conclude through a preliminary experiment that batches with a size of 5-10 tweets are best suited for labelling.}. In this step users with fewer than 5 tweets in total and sessions with fewer than 5 tweets are removed. This results in 1,500 batches for each of the \emph{baseline} and \emph{hate-related} sets.
 
-\paragraph{Labelling} CrowdFlower, each batch by 5 workers, labels: normal, aggressive, bullying, spammer
-\paragraph{Feature extraction} Spam removal, sessions. User based, text based, network based.
-\paragraph{Machine learning} Various tree based classifiers. best: WEKA, Random Forest.
-\subsubsection{Results} test all and subsets of labels.
+\paragraph{Labelling} For labelling the batches of tweets --- or rather, the users the batched tweets originate from, Chatzakou et al. employ 834 crowdsourcing workers on CrowdFlower\footnote{\url{https://www.crowdflower.com/}}. Each worker is given 10 batches of tweets and is only allowed to participate once. Furthermore, each batch is labelled by 5 workers. The possible labels are, as already mentioned, normal, aggressive, bullying and spammer. Through this method they receive a total of 1,307 annotated batches (9,484 tweets).
+
+To evaluate the reliability of the crowdsourcing workers Cha\-tzakou et al. calculate the inter-rater agreement for the annotated batches with Fleiss's kappa, which turns out to be 0.54. Furthermore, they annotate 3 batches by themselves and include one of them into each of the 10 batch packages a worker receives. These control cases turn out to get labelled with an overall accuracy of 66.5\% (83.75\% for spam, 53.56\% for bully, 61.31\% fpr aggressive).
+
+\paragraph{Feature extraction} The features used in \cite{Twitter:2017} can be categorized into user based, text based and network based. User based features include basic properties like the number of days since the user's account was created and the number of tweets, but also information derived from the generated sessions (see \emph{Data} section above), like the number of sessions and the average size of a user's sessions. Text based features include things like the number of hashtags and emoticons but also more complex features like word embedding averages obtained with word2vec\footnote{\url{https://code.google.com/archive/p/word2vec/}}, a sentiment score from SentiStrength\footnote{\url{http://sentistrength.wlv.ac.uk/}} and a hate score based on Hatebase\footnote{\url{https://www.hatebase.org/}}. Lastly, network based features are, among others, a popularity measure (follower friend ratio), the amount of reciprocity (extend of reciprocated follower connections) and several centrality scores.
+
+For all the gathered features the authors highlight differences between the labelled users groups (normal, aggressive, bullying, spammer) and wether or not they are statistically significant or not. They find, for example, that aggressive and bully users have a tendency to use more hashtags than normal users.
+
+
+\paragraph{Machine learning} For their experiments Chatzakou et al. try out using all as well as subsets of their features and test various probabilistic, tree-based and ensemble classifiers. Fruthermore they compare a classification into 4 classes (normal, aggressive, bullying, spammer) with a classification into 3 (normal, aggressive, bullying). As for the classification algorithm they achieve best results with a random forest tree-based classifier and report their results based on this.
+
+\subsubsection{Results} Testing the usefulness of the features shows that 12 of the 30 features collected don't help in distinguishing between the users classes. These features, which include for example all session based statistics, the hate score and the closeness centrality, are excluded from the analysis. The features that were most useful for each of the two classes settings and their information gain are shown in Figure \ref{fig:twitter_features}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.47\textwidth]{img/twitter_features}
+\caption{Feature evaluation in \cite{Twitter:2017}.}
+\label{fig:twitter_features}
+\end{figure}
+
+In the 4 classes setting, the classification achieves an overall precision of 71.6\% and recall of 73.32\%. The 3 classes setting results in an average precision of 89.9\% and recall of 91.7\%, where the largest improvement can be seen for the bully class. Detailed results are shown in Figure \ref{fig:twitter_results}.
+
+As an addition to their classification experiment based on tweets from June - August 2016, the authors examine the state of the labelled accounts in November 2016 and February 2017. They find that aggressive accounts got deleted by their users as well as suspended by Twitter to some extent, whereas none of the bully accouts as suspended but a larger percentage of them was deleted by the users themselves.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.47\textwidth]{img/twitter_results}
+\caption{Classification results in \cite{Twitter:2017}.}
+\label{fig:twitter_results}
+\end{figure}
+
 \subsubsection{Discussion} - twitter acc removals, user acc deletions.\\
 - no mention of language (only english, approach language independent?)\\
-- batching pre experiment nice
+- batching: optimal batch size pre experiment nice\\
+- tweet content in terms of works non really useful (interesting)
 
 \subsection{Comparison}
 - How do \cite{Yahoo:2016} and \cite{Twitter:2017} compare\\
@@ -197,7 +225,7 @@ The raw sets of tweets are furthermore processed in 3 steps. In a first step, th
 \hphantom{- }- Hate speech, derogatory language, profanity vs.\\
 \hphantom{- - }bullying, aggression\\
 \hphantom{- }- Ground truth: trained staff vs. crowd sourcing\\
-\hphantom{- }- \\
+\hphantom{- }- text based features useful vs. unuseful
 - To what extend are they comparable
 
 \section{Conclusion}
