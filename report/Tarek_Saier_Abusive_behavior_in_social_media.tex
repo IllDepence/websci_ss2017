@@ -159,13 +159,12 @@ The results are shown in Figure \ref{fig:yahoo_temporal}. The fact that the resu
 \end{figure}
 
 \subsubsection{Discussion}
-- very thorough examination\\
-- amazon mechanical turk interesting (''side''/''meta'') experiment\\
-- evaluation data set experiment: no mention of what the training set was\\
-- evaluation data set: nice that it's made public but comparison to other papers with same training set not possible\\
-- mentions outperforming ''state of the art deep learning approach'': outperforms approach based (soley?) on word2vec (which is deep learning), also uses word2vec\\
-- as mentioned in conclusion: other languages (esp. ones that don't use latin script) would be interesting\\
-- as mentioned in conclusion: usage of context (surrounding comments, user profiles, etc.) might be useful
+Nobata et al. present a very thorough examination of their topic. They test their model on different data sets, compare it to previous approaches and show the influence of all the types of features they chose to use. It is nice to see that a combination of all the features they extracted gives the best results. Additional experiments like the comparison between trained in-house staff and crowdsourcing workers as well as the testing of different gold standard references on the \emph{evaluation data set} allow for interesting insights.
+
+In their evaluation of the classifier on the \emph{evaluation data set} it would, although it is not the main point, be interesting to know which data set was used for training. Since the set is orders of magnitude smaller than the other sets it can be assumed it wasn't split into a training and test set. This ties into a remark concerning them making the \emph{evaluation data set} freely accessible. It surely is a step forward since other approaches can be tested with regards to their results in classifying the set, but their can be no direct comparison of competing models insofar as the training data will be different.
+
+As mentioned in the conclusion of the paper, it would be interesting to see how the approach works with other languages. Especially languages that don't use latin script would be of interest. Also, as mentioned by the authors, the additional integration of conext (e.g. surrounding comments, user profiles, etc.) seems woth looking into.
+%- mentions outperforming ''state of the art deep learning approach'': outperforms approach based (soley?) on word2vec (which is deep learning), also uses word2vec\\
 
 \subsection{Aggressive Twitter accounts}
 \subsubsection{Task}
@@ -214,10 +213,10 @@ As an addition to their classification experiment based on tweets from June - Au
 \label{fig:twitter_results}
 \end{figure}
 
-\subsubsection{Discussion} - twitter acc removals, user acc deletions.\\
-- no mention of language (only english, approach language independent?)\\
-- batching: optimal batch size pre experiment nice\\
-- tweet content in terms of works non really useful (interesting)
+\subsubsection{Discussion} Chatzakou et al. test a wide range of properties of twitter accounts and their respective tweets. It is interesting to see that very few of the features connected to the actual texual content of tweets seems very useful for detecting abusive users. Or, put differently, that user and network features are much more informative. Maybe this is due to the short nature of tweets. Their preliminary experiment for establishing an optimal batch size for their crowdsourcing task shows an aspect of crowdsourcing that has to be thought of with care.
+
+Since the paper makes no mention of language it could be assumed that only or mainly English tweets were used. However, with network and user features being the most useful it would be interesting to see if their appraoch works independent of language (i.e. is language agnostic).
+%- batching: optimal batch size pre experiment nice\\
 
 \subsection{Comparison}
 - How do \cite{Yahoo:2016} and \cite{Twitter:2017} compare\\
